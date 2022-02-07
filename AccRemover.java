@@ -2,6 +2,11 @@
 	Accents remover for text files and dictionaries in French
 	Requires Java 8+
 	Author: Léo Gillet
+
+
+	TODO:
+	+++ Add more variables for the user to configure the filters
+	++ applyFilter function is horrible
 */
 
 import java.util.*;
@@ -29,7 +34,7 @@ public class AccRemover {
 			}
 			writer.close();
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'export");
+			System.out.println("An error occurred while writing to file " + fileName);
 		}
 	}
 
@@ -49,7 +54,7 @@ public class AccRemover {
 		return new_word.toString();
 	}
 
-	public static List<String> triMagique(List<String> lines) {
+	public static List<String> applyFilter(List<String> lines) {
 		List<String> sorted_words = new ArrayList<String>();
 		StringBuffer new_word;
 		String[] forbidden_chars = {" ", "æ", "-", "."};
@@ -60,7 +65,6 @@ public class AccRemover {
 		String[] u_accents = {"ù", "û", "ü"};
 		String[] y_accents = {"ÿ"};
 		String[] c_accents = {"ç"};
-		System.out.println(lines.size());
 		for (int i = 0; i < lines.size(); i++) {
 			String word = lines.get(i);
 			if (word.length() > 4 && word.length() < 8) {
@@ -83,15 +87,18 @@ public class AccRemover {
 		if (args.length == 1) {
 			String fileName = args[0];
 			List<String> lines = readFileInList(fileName);
-			List<String> new_lines = triMagique(lines);
+			List<String> new_lines = applyFilter(lines);
 			System.out.println(new_lines);
 		} 
 		else if (args.length == 2) {
 			String import_file = args[0];
 			String export_file = args[1];
 			List<String> lines = readFileInList(import_file);
-			List<String> new_lines = triMagique(lines);
+			List<String> new_lines = applyFilter(lines);
 			exportArraytoFile(new_lines, export_file);
+			System.out.println("Execution successful.");
+			System.out.println("Original file is "+lines.size()+" words long.");
+			System.out.println("Filtered file is "+new_lines.size()+" words long.");
 		}
 		else if (args.length == 0) {
 			System.out.println("Accents remover for text files and dictionaries in French for a Wordle game");
